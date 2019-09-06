@@ -9,7 +9,7 @@
 
 void UART0init (void);
 void UART0_Tx (uint8_t data);
-void UART0char_Tx (uint8_t data);
+uint8_t PortE_Input();
 
 int time_state_0  = 0;
 int time_state_1  = 0; 
@@ -24,11 +24,11 @@ void computeParameters(int time_state_0, int time_state_1)
 
 void sendUart(int period, int frequency, int dutyCycle)
 {
-  UART0char_Tx (period);
+  UART0_Tx (period);
   UART0_Tx ('\n');
-  UART0char_Tx (frequency);
+  UART0_Tx (frequency);
   UART0_Tx ('\n');
-  UART0char_Tx (dutyCycle);
+  UART0_Tx (dutyCycle);
   UART0_Tx ('\n');
 } //sendUart
 
@@ -41,7 +41,7 @@ void computePwm(int numberOfLoops, int *previousState, int currentState)
   else if(time_state_1 == 0)
   {
     time_state_1 = GPIO_READ_INSTRUCTIONS_COST * numberOfLoops; 
-  }
+  } 
   else if(time_state_0 != 0 && time_state_0 != 0)
   {
     computeParameters(time_state_0, time_state_1);
