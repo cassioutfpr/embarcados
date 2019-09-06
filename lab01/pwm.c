@@ -41,7 +41,7 @@ void computePwm(int numberOfLoops, int previousState, int currentState)
   }
   else if(timeSpentOnLow == 0 && currentState == PIN_OFF)
   {
-    time_state_1 = GPIO_READ_INSTRUCTIONS_COST * numberOfLoops; 
+    timeSpentOnLow = GPIO_READ_INSTRUCTIONS_COST * numberOfLoops; 
   } 
   
   if(timeSpentOnLow != 0 && timeSpentOnHigh != 0)
