@@ -32,6 +32,10 @@ void computeParameters()
   sendUart(period, frequency, duty_cycle);
 } //computeParameters
 
+void computePwmWithSampleWindow()
+{
+  
+}
 
 void computePwm(int numberOfLoops, int previousState, int currentState)
 {
