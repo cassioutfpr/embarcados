@@ -40,9 +40,9 @@ GPIO_PORTE               	EQU    2_000000000010000
 ; Parâmetro de entrada: Não tem
 ; Parâmetro de saída: R0 --> o valor da leitura
 PortE_Input
-	LDR	R1, =GPIO_PORTE_AHB_DATA_R		    ;Carrega o valor do offset do data register
-	LDR R0, [R1]                            ;Lê no barramento de dados dos pinos [J1-J0]
-	BX LR									;Retorno
+	LDR	R1, =GPIO_PORTE_AHB_DATA_R
+	LDR R0, [R1]                            
+	BX LR									
 
 
     ALIGN                           ; garante que o fim da seção está alinhada 
