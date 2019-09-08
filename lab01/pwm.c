@@ -12,7 +12,7 @@
 #define PIN_ON 1
 #define PIN_OFF 0
 #define CLOCK 24000000
-#define INSTRUCTIONS_PER_MICROSECONDS CLOCK/3
+#define INSTRUCTIONS_PER_MICROSECONDS CLOCK/3000000
 #define LOOP_DELAY_IN_MICROSECONDS 1000
 #define TIME_SPENT_TO_PRINT 1000000/LOOP_DELAY_IN_MICROSECONDS
 
@@ -77,12 +77,10 @@ void computePwm(int numberOfLoops, int previousState, int currentState)
   if(previousState == PIN_ON)
   {
     timeSpentOnHigh = LOOP_DELAY_IN_MICROSECONDS * numberOfLoops;
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4); // Acende LED D3
   }
   else if(previousState == PIN_OFF)
   {
     timeSpentOnLow = LOOP_DELAY_IN_MICROSECONDS * numberOfLoops;
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0); // Apaga LED D3
   } 
   
   if(timeSpentOnLow != 0 && timeSpentOnHigh != 0)
@@ -108,7 +106,7 @@ void readPwm()
       previous_state = current_state;
       number_of_loops = 0;
     }
-    SysCtlDelay(INSTRUCTIONS_PER_MICROSECONDS/LOOP_DELAY_IN_MICROSECONDS); //1000u*24000000/3 delay de 100us
+    SysCtlDelay(INSTRUCTIONS_PER_MICROSECONDS*LOOP_DELAY_IN_MICROSECONDS); //1000u*24000000/3 delay de 1000us
   }
 } //readPwm
 
@@ -118,17 +116,6 @@ void UART0_Handler(void){
 
 void main(void){
   UARTInit();
-  //UARTprintf("Sistemas Embarcados - 2019/2\n");
-  
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); // Habilita GPIO F (LED D3 = PF4, LED D4 = PF0)
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF)); // Aguarda final da habilitação
-    
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4); // LEDs D3 e D4 como saída
-  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, 0); // LEDs D3 e D4 apagados
-  GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
-  
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE); // Habilita GPIO J (push-button SW1 = PJ0, push-button SW2 = PJ1)
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE)); // Aguarda final da habilitação
   
   GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0); // GPIO PORTE# como entrada.
   GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
