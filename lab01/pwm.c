@@ -51,10 +51,10 @@ void sendUart(int period, float frequency, float dutyCycle)
   int centesimal_frequency;
   
   integer_frequency = (int)frequency;
-  decimal_frequency = (int)(frequency - (float)integer_frequency)*10;
-  centesimal_frequency = (int)(frequency - (float)integer_frequency - (float)decimal_frequency/10)*100;
+  decimal_frequency = (int)((frequency - (float)integer_frequency)*10);
+  centesimal_frequency = (int)((frequency - (float)integer_frequency - (float)decimal_frequency/10)*100);
   integer_duty_cycle = (int)dutyCycle;
-  decimal_duty_cycle = (int)(dutyCycle - (float)integer_duty_cycle)*10;
+  decimal_duty_cycle = (int)((dutyCycle - (float)integer_duty_cycle)*10);
   
   UARTprintf("Periodo %d us\nFrequencia %d.%d%d Hz\nDuty Cycle %d.%d\n", period, integer_frequency, decimal_frequency, centesimal_frequency, integer_duty_cycle, decimal_duty_cycle);
 } //sendUart
