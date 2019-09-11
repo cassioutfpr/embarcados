@@ -16,10 +16,6 @@
 #define LOOP_DELAY_IN_MICROSECONDS 1000
 #define TIME_SPENT_TO_PRINT 1000000/LOOP_DELAY_IN_MICROSECONDS
 
-//void UART0init (void);
-//void UART0_Tx (uint8_t data);
-//uint8_t PortE_Input();
-
 int timeSpentOnHigh;
 int timeSpentOnLow;
 int timeSpentUntilLastPrint;
@@ -117,8 +113,9 @@ void UART0_Handler(void){
 void main(void){
   UARTInit();
   
-  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0); // GPIO PORTE# como entrada.
-  GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE); // Habilita GPIO E
+  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE)); // Aguarda final da habilitação
+  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0); // Pino 0 como entrada
   
   timeSpentOnHigh  = 0;
   timeSpentOnLow   = 0; 
