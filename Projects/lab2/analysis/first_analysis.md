@@ -48,8 +48,6 @@ reload is required, the NVIC_ST_CURRENT register must be written. Any write to t
 clears the SysTick counter to 0 and causes a reload with the ui32Period supplied here on the
 next clock after SysTick is enabled.
 
-### Justification
-
 # Other tools
 
 ### Registers
