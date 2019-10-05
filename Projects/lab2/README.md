@@ -1,1 +1,1 @@
-# Laboratório 2: Programação Bare Metalcom Interrupções e Periféricos
+# Laboratório 2: Programação Bare Metal com Interrupções e Periféricos
