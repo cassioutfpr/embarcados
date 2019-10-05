@@ -1,3 +1,7 @@
+// S12 - G03 - Lab1
+// Cássio Morales - 1612239
+// Luiz Agner - 1612280
+
 #include <stdint.h>
 #include <stdbool.h>
 // includes da biblioteca driverlib
