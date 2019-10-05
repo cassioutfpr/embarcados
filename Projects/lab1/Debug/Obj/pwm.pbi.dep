@@ -1,5 +1,4 @@
-pwm.pbi: \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\src\pwm.c \
+pwm.pbi: D:\Embarcados\embarcados\Projects\lab1\src\pwm.c \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdint.h \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\ycheck.h \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\yvals.h \
@@ -7,12 +6,12 @@ pwm.pbi: \
   C:\\Program\ Files\ (x86)\\IAR\ Systems\\Embedded\ Workbench\ 8.3\\arm\\inc\\c\\DLib_Config_Normal.h \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Product.h \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdbool.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\inc/hw_memmap.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/gpio.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/uart.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/sysctl.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/systick.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/pin_map.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\utils/uartstdio.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\inc/hw_memmap.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/gpio.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/uart.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/sysctl.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/systick.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\driverlib/pin_map.h \
+  D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178\utils/uartstdio.h \
   C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdarg.h \
-  C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas\ Embarcados\Labs\embarcados\Projects\lab1\src/system_TM4C1294.h
+  D:\Embarcados\embarcados\Projects\lab1\src/system_TM4C1294.h

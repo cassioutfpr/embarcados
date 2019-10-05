@@ -5,26 +5,22 @@
     <configuration>
         <name>Debug</name>
         <outputs>
+            <file>$PROJ_DIR$\Debug\Obj\system_TM4C1294_TW.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\simple_io_main_sp.xcl</file>
             <file>$PROJ_DIR$\src\simple_io_main_sp.c</file>
             <file>$PROJ_DIR$\src\system_TM4C1294_TW.c</file>
-            <file>$PROJ_DIR$\Debug\Exe\simple_io_main_sp.out</file>
-            <file>$PROJ_DIR$\Debug\Obj\startup_TM4C1294.o</file>
-            <file>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\driverlib\ewarm\Exe\driverlib.a</file>
-            <file>$PROJ_DIR$\src\startup_TM4C1294.s</file>
-            <file>$PROJ_DIR$\Debug\Obj\system_TM4C1294_TW.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\simple_io_main_sp.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\simple_io_main_sp.pbi</file>
-            <file>$PROJ_DIR$\Debug\Obj\simple_io_main_sp.pbd</file>
-            <file>$PROJ_DIR$\Debug\Obj\system_TM4C1294_TW.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\system_TM4C1294_TW.pbi</file>
             <file>$PROJ_DIR$\Debug\Obj\simple_io_main_sp.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\startup_TM4C1294.o</file>
+            <file>$PROJ_DIR$\Debug\Exe\simple_io_main_sp.out</file>
+            <file>$PROJ_DIR$\Debug\Obj\system_TM4C1294_TW.xcl</file>
+            <file>$PROJ_DIR$\src\startup_TM4C1294.s</file>
         </outputs>
         <file>
             <name>[ROOT_NODE]</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 2</file>
+                    <file> 6</file>
                 </tool>
             </outputs>
         </file>
@@ -33,11 +29,11 @@
             <outputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 12</file>
+                    <file> 4</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 7</file>
+                    <file> 1</file>
                 </tool>
             </outputs>
         </file>
@@ -46,11 +42,11 @@
             <outputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 10</file>
+                    <file> 0</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 6</file>
+                    <file> 7</file>
                 </tool>
             </outputs>
         </file>
@@ -59,7 +55,7 @@
             <outputs>
                 <tool>
                     <name>AARM</name>
-                    <file> 3</file>
+                    <file> 5</file>
                 </tool>
             </outputs>
         </file>
