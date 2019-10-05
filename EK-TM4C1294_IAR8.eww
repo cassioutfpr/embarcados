@@ -10,6 +10,9 @@
         <path>$WS_DIR$\Projects\lab1\lab1.ewp</path>
     </project>
     <project>
+        <path>$WS_DIR$\Projects\lab2\lab2.ewp</path>
+    </project>
+    <project>
         <path>$WS_DIR$\Projects\simple_display\simple_display.ewp</path>
     </project>
     <project>

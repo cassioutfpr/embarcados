@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\settings\lab1.Debug.general.xcl" --backend -f "C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\settings\lab1.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "D:\Embarcados\embarcados\Projects\lab1\settings\lab1.Debug.general.xcl" --backend -f "D:\Embarcados\embarcados\Projects\lab1\settings\lab1.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\settings\lab1.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\settings\lab1.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "D:\Embarcados\embarcados\Projects\lab1\settings\lab1.Debug.general.xcl" "--debug_file=%~1" --backend -f "D:\Embarcados\embarcados\Projects\lab1\settings\lab1.Debug.driver.xcl" 
 
 @echo off 
 :end

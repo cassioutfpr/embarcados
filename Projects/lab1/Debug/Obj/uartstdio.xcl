@@ -1,16 +1,16 @@
-"C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\TivaWare_C_Series-2.1.4.178\utils\uartstdio.c"
+"D:\Embarcados\embarcados\TivaWare_C_Series-2.1.4.178\utils\uartstdio.c"
 -std=c11
 -ferror-limit=0
 -fbracket-depth=512
 -MD
 -MF
-C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\Debug\Obj\uartstdio.pbi.dep
+D:\Embarcados\embarcados\Projects\lab1\Debug\Obj\uartstdio.pbi.dep
 -o
 uartstdio.pbi
 -I
-C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\TivaWare_C_Series-2.1.4.178\utils
+D:\Embarcados\embarcados\TivaWare_C_Series-2.1.4.178\utils
 -I
-C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178
+D:\Embarcados\embarcados\Projects\lab1\..\..\TivaWare_C_Series-2.1.4.178
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\CMSIS\Core\Include
 -I
@@ -20,7 +20,7 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc\c
 -I
-C:\Users\luiza\OneDrive\UTFPR\Arquivos\2019-2\Sistemas Embarcados\Labs\embarcados\TivaWare_C_Series-2.1.4.178
+D:\Embarcados\embarcados\TivaWare_C_Series-2.1.4.178
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\CMSIS\Core\Include
 -I

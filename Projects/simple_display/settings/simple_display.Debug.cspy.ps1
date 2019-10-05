@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "D:\aulas\EL68E_SE\install_IAR8\EK-TM4C1294_IAR8\Projects\simple_display\settings\simple_display.Debug.general.xcl" --backend -f "D:\aulas\EL68E_SE\install_IAR8\EK-TM4C1294_IAR8\Projects\simple_display\settings\simple_display.Debug.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "D:\Embarcados\embarcados\Projects\simple_display\settings\simple_display.Debug.general.xcl" --backend -f "D:\Embarcados\embarcados\Projects\simple_display\settings\simple_display.Debug.driver.xcl" 
 }
 else
 {
-& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "D:\aulas\EL68E_SE\install_IAR8\EK-TM4C1294_IAR8\Projects\simple_display\settings\simple_display.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\aulas\EL68E_SE\install_IAR8\EK-TM4C1294_IAR8\Projects\simple_display\settings\simple_display.Debug.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\common\bin\cspybat" -f "D:\Embarcados\embarcados\Projects\simple_display\settings\simple_display.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Embarcados\embarcados\Projects\simple_display\settings\simple_display.Debug.driver.xcl" 
 }
