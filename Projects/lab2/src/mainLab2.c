@@ -8,11 +8,23 @@
 #include "driverlib/timer.h"
 
 uint8_t LED_D1 = 0;
+
+enum states{
+  HIGH = 0,
+  LOW  = 1
+};
+
 bool high = true;
 
 void timeOutHandler(void)
 {
-  
+  if(high)
+  {
+    //TODO timeout on high
+  }else
+  {
+    //TODO timeout on low
+  }
 }
 
 void handlerEntrancePwm(void)
