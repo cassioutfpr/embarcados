@@ -62,11 +62,11 @@
                 </option>
                 <option>
                     <name>OGProductVersion</name>
-                    <state>7.40.7.9864</state>
+                    <state>8.40.1.21529</state>
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.30.1.17146</state>
+                    <state>8.40.1.21529</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -233,7 +233,7 @@
                 </option>
                 <option>
                     <name>CCPreprocLine</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCFile</name>
@@ -650,7 +650,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>simple_uart.srec</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -705,7 +705,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>simple_uart.out</state>
+                    <state>lab1.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1002,7 +1002,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>simple_uart_import_lib.o</state>
+                    <state>lab1_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1114,7 +1114,7 @@
                 </option>
                 <option>
                     <name>OGProductVersion</name>
-                    <state>7.40.7.9864</state>
+                    <state>8.40.1.21529</state>
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
@@ -1169,7 +1169,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>27</version>
-                    <state>1</state>
+                    <state>38</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -1186,7 +1186,7 @@
                 <option>
                     <name>CoreVariant</name>
                     <version>27</version>
-                    <state>0</state>
+                    <state>38</state>
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
@@ -1209,7 +1209,7 @@
                 <option>
                     <name>GFPUCoreSlave2</name>
                     <version>27</version>
-                    <state>1</state>
+                    <state>38</state>
                 </option>
                 <option>
                     <name>OGCMSISPackSelectDevice</name>
@@ -1284,7 +1284,7 @@
                 </option>
                 <option>
                     <name>CCPreprocLine</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCFile</name>
@@ -1792,7 +1792,7 @@
                 </option>
                 <option>
                     <name>IlinkMapFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogFile</name>
@@ -2105,16 +2105,22 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\src\data_definitions.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\driverlib\ewarm\Exe\driverlib.a</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\simple_uart.c</name>
+        <name>$PROJ_DIR$\src\pwm.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\src\startup_TM4C1294.s</name>
     </file>
     <file>
         <name>$PROJ_DIR$\src\system_TM4C1294_TW.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\src\TM4C1294NCPDT.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\utils\uartstdio.c</name>

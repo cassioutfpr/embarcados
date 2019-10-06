@@ -1,12 +1,12 @@
-"C:\Users\Caio\Desktop\embarcados\embarcados\Projects\lab2\src\system_TM4C1294_TW.c"
+"C:\Users\Caio\Desktop\embarcados\embarcados\Projects\lab2\src\mainLab2.c"
 -std=c11
 -ferror-limit=0
 -fbracket-depth=512
 -MD
 -MF
-C:\Users\Caio\Desktop\embarcados\embarcados\Projects\lab2\Debug\Obj\system_TM4C1294_TW.pbi.dep
+C:\Users\Caio\Desktop\embarcados\embarcados\Projects\lab2\Debug\Obj\mainLab2.pbi.dep
 -o
-system_TM4C1294_TW.pbi
+mainLab2.pbi
 -I
 C:\Users\Caio\Desktop\embarcados\embarcados\Projects\lab2\src
 -I

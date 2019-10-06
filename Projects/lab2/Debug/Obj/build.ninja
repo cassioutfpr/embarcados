@@ -20,8 +20,9 @@ rule browsedata
 
 
 #Build steps
+build mainLab2.pbi : index mainLab2.xcl
 build system_TM4C1294_TW.pbi : index system_TM4C1294_TW.xcl
-build lab2.pbd : link system_TM4C1294_TW.pbi
+build lab2.pbd : link mainLab2.pbi system_TM4C1294_TW.pbi
 build lab2.pbw : browsedata lab2.pbd
 
 
