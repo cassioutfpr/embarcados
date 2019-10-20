@@ -2389,4 +2389,7 @@
     <file>
         <name>$PROJ_DIR$\src\TM4C1294NCPDT.h</name>
     </file>
+    <file>
+        <name>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\utils\uartstdio.c</name>
+    </file>
 </project>

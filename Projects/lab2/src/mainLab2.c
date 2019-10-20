@@ -1,15 +1,24 @@
-// S12 - G03 - Lab1
+// S12 - G03 - Lab2
 // Cássio Morales - 1612239
 // Luiz Agner - 1612280
+
 #include <stdint.h>
 #include <stdbool.h>
 // includes da biblioteca driverlib
 #include "inc/hw_memmap.h"
 #include "driverlib/gpio.h"
+#include "driverlib/uart.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
-#include "driverlib/timer.h"
-#define TIME_OUT 1000000
+#include "driverlib/pin_map.h"
+#include "utils/uartstdio.h"
+#include "system_TM4C1294.h" 
+#define TIME_OUT 14000000
+#define CLOCK 24000000
+#define CLOCK_US 24
+#define INSTRUCTIONS_PER_MICROSECONDS CLOCK/3000000
+#define LOOP_DELAY_IN_MICROSECONDS 1000
+#define TIME_SPENT_TO_PRINT 1000000/LOOP_DELAY_IN_MICROSECONDS
 
 uint8_t LED_D1 = 0;
 
@@ -20,85 +29,116 @@ enum states{
 
 bool high = false;
 bool high2 = false;
-volatile int time_on_high = 0;
-volatile int time_on_low = 0;
+int timeSpentOnHigh = 0;
+int timeSpentOnLow = 0;
+int timeSpentUntilLastPrint = 0;
 
-void handler2(void){
-  if(high2)
-  {
-     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_PIN_4); // Apaga LED D4
-     time_on_high = 16000000;
-     high2 = false;
-  }
-  else{
-     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, 0); // Apaga LED D4
-    time_on_low = 16000000;
-    high2 = true;
-  }
-  
-  SysTickIntDisable();
-  SysTickDisable();
-  SysTickPeriodSet(12000000);
-  SysTickIntEnable();
-  SysTickEnable();
-  SysTickIntRegister(handler2);
-  //MANDAR PRA UART
-    
+void UARTInit(void){
+  // Enable the GPIO Peripheral used by the UART.
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOA));
+
+  // Enable UART0
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART0));
+
+  // Configure GPIO Pins for UART mode.
+  GPIOPinConfigure(GPIO_PA0_U0RX);
+  GPIOPinConfigure(GPIO_PA1_U0TX);
+  GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+
+  // Initialize the UART for console I/O.
+  UARTStdioConfig(0, 100000, SystemCoreClock);
+} // UARTInit
+
+void resetSysTick(void)
+{
+    uint32_t your_32_bit_value = 0x00000000;
+    uint32_t volatile * const mem_map_register = (uint32_t volatile *) 0xE000E018;
+    *mem_map_register = your_32_bit_value;
+}
+
+void UART0_Handler(void){
+  UARTStdioIntHandler();
+} // UART0_Handler
+
+void timeOutHandler(void)
+{
+  UARTprintf("TIMEOUT\n"); 
 } // SysTick_Handler
+
+void sendUart(int period, float frequency, float dutyCycle)
+{
+  volatile int integer_frequency, integer_duty_cycle;
+  volatile int decimal_frequency, decimal_duty_cycle;
+  volatile int centesimal_frequency;
+  
+  integer_frequency = (int)frequency;
+  decimal_frequency = (int)((frequency - (float)integer_frequency)*10);
+  centesimal_frequency = (int)((frequency - (float)integer_frequency - (float)decimal_frequency/10)*100);
+  integer_duty_cycle = (int)dutyCycle;
+  decimal_duty_cycle = (int)((dutyCycle - (float)integer_duty_cycle)*10);
+  
+  UARTprintf("Periodo %d us\nFrequencia %d.%d%d Hz\nDuty Cycle %d.%d\n", period, integer_frequency, decimal_frequency, centesimal_frequency, integer_duty_cycle, decimal_duty_cycle);
+} //sendUart
+
+void computeParametersAndSendToUART()
+{
+  int periodus      = timeSpentOnLow + timeSpentOnHigh;
+  float frequency   = 1.0/(float)(periodus/1000000.0);
+  float duty_cycle  = (float)timeSpentOnHigh/periodus;
+  
+  sendUart(periodus, frequency, duty_cycle*100.0);
+}
 
 void handlerEntrancePwm(void)
 {
-  SysTickIntDisable();
-  SysTickDisable();
-  SysTickPeriodSet(12000000); // f = 1Hz para clock = 24MHz
-  SysTickIntRegister(handler2);
-  SysTickIntEnable();
-  SysTickEnable();
-   volatile int loco = 0;
-   if(high) // Testa estado do push-button SW2
+   volatile int local;  
+   if(high) 
    {
-      GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_FALLING_EDGE);
-      GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 1); // Apaga LED D4
+      GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_FALLING_EDGE);
       high = false;
-      loco = SysTickValueGet();
-      loco++;
-      time_on_low = SysTickValueGet();
+      timeSpentOnLow = ((TIME_OUT - SysTickValueGet() -1 ))/CLOCK_US;
    }
    else
    {
-      GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
-      GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0); // Acende LED D4
+      GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
       high = true;
-      time_on_high = SysTickValueGet();
+      timeSpentOnHigh = ((TIME_OUT - SysTickValueGet() - 1))/CLOCK_US;
    }
-  GPIOIntClear(GPIO_PORTE_BASE, GPIO_INT_PIN_0);
+   
+   local = timeSpentOnLow;
+  if(timeSpentUntilLastPrint >= TIME_SPENT_TO_PRINT)
+  {
+    computeParametersAndSendToUART();
+    timeSpentUntilLastPrint = 0;
+  }
+  GPIOIntClear(GPIO_PORTD_BASE, GPIO_INT_PIN_0);
+  resetSysTick();
 }
 
 void gpio_initialization()
 {
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE); // Habilita GPIO E
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE)); // Aguarda final da habilitação
-  GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0); // Pino 0 como entrada
-  GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
-  GPIOIntRegister(GPIO_PORTE_BASE, handlerEntrancePwm);
-  GPIOIntEnable(GPIO_PORTE_BASE, GPIO_INT_PIN_0);
-
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); 
+  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD)); 
+  GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, GPIO_PIN_0);
+  GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+  GPIOIntRegister(GPIO_PORTD_BASE, handlerEntrancePwm);
+  GPIOIntEnable(GPIO_PORTD_BASE, GPIO_INT_PIN_0);
 }
 
-void main(void){
-
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); // Habilita GPIO F (LED D3 = PF4, LED D4 = PF0)
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF)); // Aguarda final da habilitação
-    
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4); // LEDs D3 e D4 como saída
-  GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, 0); // LEDs D3 e D4 apagados
-  GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
-  
-  //UARTInit();
+void main(void)
+{
+  UARTInit();
   gpio_initialization();
-  int opalele = 0;
-  while(1){
-    opalele++;
-    opalele--;
+    
+  SysTickPeriodSet(TIME_OUT);
+  SysTickIntEnable();
+  SysTickIntRegister(timeOutHandler);
+  SysTickEnable();
+   
+  while(1) {
+    timeSpentUntilLastPrint++;
+    SysCtlDelay(INSTRUCTIONS_PER_MICROSECONDS*LOOP_DELAY_IN_MICROSECONDS);
   }
 } // main

@@ -220,7 +220,8 @@
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
-                    <state></state>
+                    <state>PART_TM4C1294NCPDT</state>
+                    <state>UART_BUFFERED</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -361,7 +362,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -370,7 +371,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>
@@ -2120,5 +2121,8 @@
     </file>
     <file>
         <name>$PROJ_DIR$\src\TM4C1294NCPDT.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\utils\uartstdio.c</name>
     </file>
 </project>
