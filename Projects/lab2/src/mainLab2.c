@@ -11,11 +11,12 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/pin_map.h"
+#include "driverlib/timer.h"
 #include "utils/uartstdio.h"
 #include "system_TM4C1294.h" 
 #define TIME_OUT 14000000
-#define CLOCK 24000000
-#define CLOCK_US 24
+#define CLOCK 120000000
+#define CLOCK_US 120
 #define INSTRUCTIONS_PER_MICROSECONDS CLOCK/3000000
 #define LOOP_DELAY_IN_MICROSECONDS 1000
 #define TIME_SPENT_TO_PRINT 1000000/LOOP_DELAY_IN_MICROSECONDS
@@ -28,7 +29,6 @@ enum states{
 };
 
 bool high = false;
-bool high2 = false;
 int timeSpentOnHigh = 0;
 int timeSpentOnLow = 0;
 int timeSpentUntilLastPrint = 0;
@@ -98,13 +98,13 @@ void handlerEntrancePwm(void)
    {
       GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_FALLING_EDGE);
       high = false;
-      timeSpentOnLow = ((TIME_OUT - SysTickValueGet() -1 ))/CLOCK_US;
+      timeSpentOnLow = ((TIME_OUT - SysTickValueGet()))/CLOCK_US;
    }
    else
    {
       GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
       high = true;
-      timeSpentOnHigh = ((TIME_OUT - SysTickValueGet() - 1))/CLOCK_US;
+      timeSpentOnHigh = ((TIME_OUT - SysTickValueGet()))/CLOCK_US;
    }
    
    local = timeSpentOnLow;
@@ -117,25 +117,49 @@ void handlerEntrancePwm(void)
   resetSysTick();
 }
 
+void handler_timers(void)
+{
+  
+}
+
 void gpio_initialization()
 {
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); 
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD)); 
-  GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, GPIO_PIN_0);
-  GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
-  GPIOIntRegister(GPIO_PORTD_BASE, handlerEntrancePwm);
-  GPIOIntEnable(GPIO_PORTD_BASE, GPIO_INT_PIN_0);
+  
+  GPIOPinTypeTimer(GPIO_PORTD_BASE, GPIO_PIN_0);//Configures pin(s) for use by the Timer peripheral.
+    //#1 parameter: the base address of the GPIO port.
+    //#2parameter: the bit-packed representation of the pin(s)
+  
+  GPIOPinConfigure(GPIO_PD0_T0CCP0); // Configures the alternate function of a GPIO pin.
+      
+  //GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, GPIO_PIN_0);
+  //GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_RISING_EDGE);
+  //GPIOIntRegister(GPIO_PORTD_BASE, handlerEntrancePwm);
+  //GPIOIntEnable(GPIO_PORTD_BASE, GPIO_INT_PIN_0);
 }
 
+void timer_initialization(void)
+{
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_TIMER0));
+  TimerConfigure(TIMER0_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_CAP_TIME_UP | TIMER_CFG_B_CAP_TIME_UP));
+  TimerControlEvent(TIMER0_BASE, TIMER_BOTH, TIMER_EVENT_POS_EDGE);
+  //TIMER_EVENT_POS_EDGE
+  //TIMER_EVENT_NEG_EDGE
+  //TIMER_EVENT_BOTH_EDGES
+  
+  //TimerLoadSet(TIMER0_BASE, TIMER_BOTH, 0xFFFF);
+  TimerEnable(TIMER0_BASE, TIMER_BOTH);
+  TimerIntClear(TIMER0_BASE, TIMER_CAPA_EVENT | TIMER_CAPB_EVENT);
+  TimerIntEnable(TIMER0_BASE, TIMER_CAPA_EVENT | TIMER_CAPB_EVENT);
+  TimerIntRegister(TIMER0_BASE, TIMER_BOTH, handler_timers);
+}
 void main(void)
 {
   UARTInit();
   gpio_initialization();
-    
-  SysTickPeriodSet(TIME_OUT);
-  SysTickIntEnable();
-  SysTickIntRegister(timeOutHandler);
-  SysTickEnable();
+  timer_initialization();  
    
   while(1) {
     timeSpentUntilLastPrint++;
