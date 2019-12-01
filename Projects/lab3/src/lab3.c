@@ -1,8 +1,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
-#include "driverleds.h" // device drivers
-#include "cmsis_os2.h" // CMSIS-RTOS
+#include "driverleds.h"
+#include "cmsis_os2.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 #include "driverlib/qei.h"
@@ -12,17 +12,18 @@
 #include "driverlib/uart.h"
 #include "utils/uartstdio.h"
 
-#define ENCODER_TICKS 24000000
+#define ENCODER_TICKS 1000000
 #define ENCODER_PERIOD_IN_MS 200
 #define DIRECTION_SAMPLES_SIZE 5
-#define SPEED_SAMPLES_SIZE 5
+#define SPEED_SAMPLES_SIZE 2
+#define CONST_RPM_CALCULATION 33/SPEED_SAMPLES_SIZE
 
-#define integrateMax 3300
-#define integrateMin 2700
+#define integrateMax 20000
+#define integrateMin 0
 
-#define P_GAIN 2
-#define I_GAIN 0.01
-#define D_GAIN 2000
+#define P_GAIN 1.2
+#define I_GAIN 0.57
+#define D_GAIN 0.35
 
 osThreadId_t tid_control;               
 osThreadId_t tid_userReset;  
@@ -50,19 +51,23 @@ int rpm_control_output;
 
 int integrateSum;
 
-int last_position = 0;
+int last_error = 0;
+int speed_one_sample;
+
+bool first_speed = true;
 
 extern void UARTStdioIntHandler(void);
 
 void userCommunication() {
+  
+  QEIIntDisable(QEI0_BASE, QEI_INTTIMER);
+  
   userTyping = true;
   
   UARTprintf("Bem Vindo!\nDigite o RPM no formato XXXX. \n O valor do RPM deve ser de 2000 ate 5000. \nPara alterar o RPM após a inicialização aperte R.\n");
   UARTprintf("Digite o RPM: ");
   
-  while(!UARTCharsAvail(UART0_BASE))
-  {
-  }
+  while(!UARTCharsAvail(UART0_BASE)){}
   
   int set_rpm = 0;
   
@@ -95,6 +100,8 @@ void userCommunication() {
   setpoint = set_rpm;
   
   userTyping = false;
+  
+  QEIIntEnable(QEI0_BASE, QEI_INTTIMER);
 }
 
 
@@ -112,10 +119,10 @@ void calculateDirection (void *argument) {
     for(int i = 0 ; i < DIRECTION_SAMPLES_SIZE ; i++) {
       if(direction_samples[i] == 1) clockwise++;
       else counterclockwise++;
-      
-      if(clockwise > counterclockwise) actual_direction = 1;
-      else actual_direction = -1;
     }
+    
+    if(clockwise > counterclockwise) actual_direction = 1;
+    else actual_direction = -1;
     
     if(set_direction != actual_direction) {
       switch(set_direction) {
@@ -156,7 +163,8 @@ void calculateSpeed (void *argument) {
   
   while(1) {
     osDelay(1);
-
+    osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+    
     int pulses_accumulator = 0;
     float average_pulses_per_second;
       
@@ -164,8 +172,8 @@ void calculateSpeed (void *argument) {
       pulses_accumulator += speed_samples[i];
     }
     
-    average_pulses_per_second = ((((float)pulses_accumulator)/SPEED_SAMPLES_SIZE)/4)*5;
-    actual_speed_rpm = (average_pulses_per_second/18)*60;
+    actual_speed_rpm = (CONST_RPM_CALCULATION * pulses_accumulator);
+      
     volatile int a = actual_speed_rpm;
     osThreadFlagsSet(tid_control, 0x0001);
     if(!userTyping) {
@@ -182,11 +190,14 @@ void readSampleSpeed (void *argument) {
     for(int i = 0 ; i < SPEED_SAMPLES_SIZE ; i++) {
       osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
       speed_samples[i] = last_speed_read;
+      if(speed_samples_completed)
+        osThreadFlagsSet(tid_calculateSpeed, 0x0001);
     }
     if(!speed_samples_completed) {
       speed_samples_completed = !speed_samples_completed;
       osThreadFlagsSet(tid_calculateSpeed, 0x0001);
     }
+
   }
 }
 
@@ -199,35 +210,31 @@ void control(void *argument) {
     volatile float duty_cycle = 0.0;
     
     // P
-    int error = (setpoint - actual_speed_rpm) * P_GAIN;
-    int p = setpoint + error;
+    int error = setpoint - actual_speed_rpm;
+    int p = error * P_GAIN;
     
     // I
-    int i;
-    integrateSum += error;
-
-    if (integrateSum > integrateMax) {
-            integrateSum = integrateMax;
-    }
-    else if (integrateSum < integrateMin) {
-            integrateSum = integrateMin;
-    }
-
-    i = I_GAIN * (float)integrateSum;
+    int itemp = integrateSum + error;
+    int i = itemp * I_GAIN;
     
     // D
-    int d = D_GAIN * (last_position - actual_speed_rpm);
-    last_position = actual_speed_rpm;
+    int d = D_GAIN * (error - last_error);
+    last_error = error;
     
     // PID
-    rpm_control_output = p + i + d;
+    duty_cycle = p + d + i;
     
-    if(rpm_control_output > 5000)
-      rpm_control_output = 5000;
-    if(rpm_control_output < 0)
-      rpm_control_output = setpoint;
+    volatile int rpmControl = duty_cycle;
+    volatile int actualSpeed =  actual_speed_rpm;
     
-    duty_cycle = (60000.0*rpm_control_output)/5000.0;
+    if(duty_cycle > 0 && duty_cycle < 20000)
+      integrateSum = itemp;
+    
+    if(duty_cycle > 20000)
+      duty_cycle = 20000;
+    else if(duty_cycle < 0)
+      duty_cycle = 10;
+    
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2, (int)duty_cycle);
   }
 }
@@ -237,7 +244,7 @@ void control(void *argument) {
  *---------------------------------------------------------------------------*/
 void userReset (void *argument) {
   while(1) {
-    osDelay(500);
+    osDelay(50);
     char user = UARTCharGet(UART0_BASE);
     
     if(user == 'r')
@@ -245,7 +252,7 @@ void userReset (void *argument) {
   }
 }
 
-void UARTInit(void){
+void UARTInit(void) {
   // Enable the GPIO Peripheral used by the UART.
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOA));
@@ -263,21 +270,15 @@ void UARTInit(void){
   UARTStdioConfig(0, 100000, SystemCoreClock);
 }
 
-void UART0_Handler(void){
+void UART0_Handler(void) {
   UARTStdioIntHandler();
 }
 
 void QEI0Handler(void) {
   QEIIntClear(QEI0_BASE, QEI_INTTIMER);
   last_speed_read = QEIVelocityGet(QEI0_BASE);
+  volatile int last = last_speed_read;
   osThreadFlagsSet(tid_readSampleSpeed, 0x0001);   
-}
-
-void changeDirectionJustForFun(void *argument) {
-  while(1) {
-    osDelay(2000);
-    set_direction *= -1;
-  }
 }
 
 /*----------------------------------------------------------------------------
@@ -290,7 +291,6 @@ void appMain (void *argument) {
   tid_calculateSpeed = osThreadNew(calculateSpeed, NULL, NULL);
   tid_readSampleDirection = osThreadNew(readSampleDirection, NULL, NULL);
   tid_calculateDirection = osThreadNew(calculateDirection, NULL, NULL);
-//  tid_changeDirectionJustForFun = osThreadNew(changeDirectionJustForFun, NULL, NULL);
   
   osDelay(osWaitForever);
   while(1);
@@ -301,7 +301,7 @@ void enableQEI() {
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOL)){}
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_QEI0)){}
-  QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET | QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 1);
+  QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET | QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 71);
   GPIOPinTypeQEI(GPIO_PORTL_BASE, GPIO_PIN_1 | GPIO_PIN_2);
   GPIOPinConfigure(GPIO_PL1_PHA0);
   GPIOPinConfigure(GPIO_PL2_PHB0);
@@ -323,7 +323,7 @@ void enablePwm() {
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_PWM0)) {}
   
   PWMGenConfigure(PWM0_BASE, PWM_GEN_1, PWM_GEN_MODE_DBG_RUN | PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-  PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 60000);
+  PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 20000);
 }
 
 void enableMotor() {
@@ -338,15 +338,15 @@ void enableMotor() {
   GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_PIN_0);
   GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_0, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD);
   
-  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2, 10);
+  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2, 20000);
   PWMGenEnable(PWM0_BASE, PWM_GEN_1);
   PWMOutputState(PWM0_BASE, (PWM_OUT_2_BIT), true);
 }
 
 int main (void) {
   UARTInit();
-  userCommunication();
   enableQEI();
+  userCommunication();
   enablePwm();
   enableMotor();
   osKernelInitialize();               
@@ -354,4 +354,5 @@ int main (void) {
   if (osKernelGetState() == osKernelReady) {
     osKernelStart();               
   }
+  while(1); 
 }
