@@ -1,3 +1,7 @@
+// S12 - G03 - Lab3
+// Cássio Morales - 1612239
+// Luiz Agner - 1612280
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "inc/hw_memmap.h"
